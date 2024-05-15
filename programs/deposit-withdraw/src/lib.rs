@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use solana_program::entrypoint::ProgramResult;
 
-declare_id!("CNx5eYLkfcwRTASB8LJWKrDHHeguLi2d7Mb9ebBFMsPS");
+declare_id!("5JgMPUKrLZwVXA3nkcuXXV5FaiiiSZmDnFm6Qqa3atoo");
 
 #[program]
 pub mod deposit_withdraw {
