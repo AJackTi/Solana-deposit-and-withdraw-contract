@@ -1,12 +1,14 @@
-const assert = require("assert");
-import * as anchor from '@project-serum/anchor';
-import { Program } from '@project-serum/anchor';
-import { DepositWithdraw } from '../target/types/deposit_withdraw';
+import * as anchor from "@project-serum/anchor";
+import { Program } from "@project-serum/anchor";
+import { DepositWithdraw } from "../target/types/deposit_withdraw";
 
-import poolSecret from '../pool.json';
+import fs from "fs";
 
-describe('deposit-withdraw', () => {
+const poolSecret = JSON.parse(
+  fs.readFileSync("./target/deploy/deposit_withdraw-keypair.json", "utf-8")
+);
 
+describe("deposit-withdraw", () => {
   // Configure the client to use the local cluster.
   anchor.setProvider(anchor.Provider.env());
 
@@ -14,17 +16,17 @@ describe('deposit-withdraw', () => {
 
   const provider = anchor.getProvider();
 
-  const poolKeypair = anchor.web3.Keypair.fromSecretKey(new Uint8Array(poolSecret));
-  
-  it('Is initialized!', async () => {
-    const [
-        poolSigner,
-        nonce,
-    ] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          poolKeypair.publicKey.toBuffer(),
-        ],
-        program.programId
+  const poolKeypair = anchor.web3.Keypair.fromSecretKey(
+    new Uint8Array(poolSecret)
+  );
+
+  console.log("Authority:", provider.wallet.publicKey.toBase58());
+  console.log("Pool:", poolKeypair.publicKey.toBase58());
+
+  it("Is initialized!", async () => {
+    const [poolSigner, nonce] = anchor.web3.PublicKey.findProgramAddressSync(
+      [poolKeypair.publicKey.toBuffer()],
+      program.programId
     );
 
     const tx = await program.rpc.initialize(nonce, {
@@ -36,11 +38,10 @@ describe('deposit-withdraw', () => {
         vault: poolSigner,
         systemProgram: anchor.web3.SystemProgram.programId,
       },
-      signers: [poolKeypair, ],
-      instructions: [
-          await program.account.pool.createInstruction(poolKeypair, ),
-      ],
+      signers: [poolKeypair],
+      instructions: [await program.account.pool.createInstruction(poolKeypair)],
     });
+
     console.log("Your transaction signature", tx);
   });
 });
