@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use solana_program::entrypoint::ProgramResult;
 
-declare_id!("5JgMPUKrLZwVXA3nkcuXXV5FaiiiSZmDnFm6Qqa3atoo");
+declare_id!("A5KXGv2RWAMh2peKDWmnppF6FQgK3Rk3UCxyq5mV7nBb");
 
 #[program]
 pub mod deposit_withdraw {
@@ -31,6 +31,11 @@ pub mod deposit_withdraw {
     }
 
     pub fn withdraw(ctx: Context<Withdraw>, amount: u64) -> ProgramResult {
+        // Ensure that the caller is the owner
+        if ctx.accounts.authority.key() != ctx.accounts.pool.authority {
+            return Err(ProgramError::from(error!(Errors::Unauthorized)));
+        }
+
         let seeds = &[ctx.accounts.pool.to_account_info().key.as_ref(), &[ctx.accounts.pool.nonce]];
         let signer = &[&seeds[..]];
         let lamports = ctx.accounts.vault.to_account_info().lamports();
@@ -117,6 +122,9 @@ pub struct Withdraw<'info> {
     /// CHECK: This is not dangerous because we don't read or write from this account
     pool_signer: UncheckedAccount<'info>,
     system_program: Program<'info, System>,
+
+    // Ensure that the withdraw transaction is signed by the authority
+    authority: Signer<'info>,
 }
 
 #[account]
@@ -130,4 +138,6 @@ pub struct Pool {
 pub enum Errors {
     #[msg("Pool amount is not enough.")]
     NotEnoughPoolAmount,
+    #[msg("Unauthorized")]
+    Unauthorized,
 }

@@ -19,6 +19,7 @@ describe("deposit-withdraw", () => {
   const poolKeypair = anchor.web3.Keypair.fromSecretKey(
     new Uint8Array(poolSecret)
   );
+  // let poolKeypair = anchor.web3.Keypair.generate();
 
   console.log("Authority:", provider.wallet.publicKey.toBase58());
   console.log("Pool:", poolKeypair.publicKey.toBase58());
