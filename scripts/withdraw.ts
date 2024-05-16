@@ -1,14 +1,13 @@
+import assert from "assert";
 import * as anchor from "@project-serum/anchor";
 import { Program } from "@project-serum/anchor";
 import { DepositWithdraw } from "../target/types/deposit_withdraw";
 
 import fs from "fs";
 
-const poolSecret = JSON.parse(
-  fs.readFileSync("./target/deploy/deposit_withdraw-keypair.json", "utf-8")
-);
+const poolSecret = JSON.parse(fs.readFileSync("./secret.json", "utf-8"));
 
-describe("deposit-withdraw", () => {
+describe("withdraw", () => {
   // Configure the client to use the local cluster.
   anchor.setProvider(anchor.Provider.env());
 
@@ -19,30 +18,29 @@ describe("deposit-withdraw", () => {
   const poolKeypair = anchor.web3.Keypair.fromSecretKey(
     new Uint8Array(poolSecret)
   );
-  // let poolKeypair = anchor.web3.Keypair.generate();
 
   console.log("Authority:", provider.wallet.publicKey.toBase58());
   console.log("Pool:", poolKeypair.publicKey.toBase58());
 
-  it("Is initialized!", async () => {
+  it("Withdraw", async () => {
     const [poolSigner, nonce] = anchor.web3.PublicKey.findProgramAddressSync(
       [poolKeypair.publicKey.toBuffer()],
       program.programId
     );
 
-    const tx = await program.rpc.initialize(nonce, {
+    const amount = anchor.web3.LAMPORTS_PER_SOL / 10;
+    const tx = await program.rpc.withdraw(new anchor.BN(amount), {
       accounts: {
-        authority: provider.wallet.publicKey,
         pool: poolKeypair.publicKey,
-        poolSigner: poolSigner,
-        owner: provider.wallet.publicKey,
+        authority: provider.wallet.publicKey,
         vault: poolSigner,
+        receiver: provider.wallet.publicKey,
+        poolSigner: poolSigner,
         systemProgram: anchor.web3.SystemProgram.programId,
       },
-      signers: [poolKeypair],
-      instructions: [await program.account.pool.createInstruction(poolKeypair)],
     });
 
-    console.log("Your transaction signature", tx);
+    let contractLamports = await provider.connection.getBalance(poolSigner);
+    assert.equal(contractLamports, 0);
   });
 });

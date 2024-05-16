@@ -21,18 +21,26 @@ describe("deposit-withdraw", () => {
       program.programId
     );
 
-    const tx = await program.rpc.initialize(nonce, {
-      accounts: {
-        authority: provider.wallet.publicKey,
-        pool: poolKeypair.publicKey,
-        poolSigner: poolSigner,
-        owner: provider.wallet.publicKey,
-        vault: poolSigner,
-        systemProgram: anchor.web3.SystemProgram.programId,
+    const tx = await program.rpc.initialize(
+      {
+        nonce: nonce,
+        totalPoolAmount: 78,
       },
-      signers: [poolKeypair],
-      instructions: [await program.account.pool.createInstruction(poolKeypair)],
-    });
+      {
+        accounts: {
+          authority: provider.wallet.publicKey,
+          pool: poolKeypair.publicKey,
+          poolSigner: poolSigner,
+          owner: provider.wallet.publicKey,
+          vault: poolSigner,
+          systemProgram: anchor.web3.SystemProgram.programId,
+        },
+        signers: [poolKeypair],
+        instructions: [
+          await program.account.pool.createInstruction(poolKeypair),
+        ],
+      }
+    );
 
     console.log("Your transaction signature", tx);
   });

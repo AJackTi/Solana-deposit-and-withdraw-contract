@@ -6,3 +6,4 @@ target
 node_modules
 keypair.json
 pool.json
+secret.json

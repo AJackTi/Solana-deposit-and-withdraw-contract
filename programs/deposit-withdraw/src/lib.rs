@@ -6,16 +6,29 @@ declare_id!("A5KXGv2RWAMh2peKDWmnppF6FQgK3Rk3UCxyq5mV7nBb");
 #[program]
 pub mod deposit_withdraw {
     use super::*;
-    pub fn initialize(ctx: Context<Initialize>, nonce: u8) -> ProgramResult {
+    pub fn initialize(
+        ctx: Context<Initialize>,
+        nonce: u8
+        // total_pool_amount: u64
+    ) -> ProgramResult {
         let pool = &mut ctx.accounts.pool;
         pool.authority = ctx.accounts.authority.key();
         pool.vault = ctx.accounts.vault.key();
         pool.nonce = nonce;
+        pool.total_pool_amount = 78;
 
         Ok(())
     }
 
     pub fn deposit(ctx: Context<Deposit>, amount: u64) -> ProgramResult {
+        if amount < 1 {
+            return Err(ProgramError::from(error!(Errors::InvalidAmount)));
+        }
+
+        if ctx.accounts.pool.pool_amount + amount > ctx.accounts.pool.total_pool_amount {
+            return Err(ProgramError::from(error!(Errors::ExceedPoolAmount)));
+        }
+
         let ix = solana_program::system_instruction::transfer(
             &ctx.accounts.depositor.key(),
             &ctx.accounts.vault.key(),
@@ -26,6 +39,8 @@ pub mod deposit_withdraw {
             &ix,
             &[ctx.accounts.depositor.to_account_info(), ctx.accounts.vault.to_account_info()]
         )?;
+
+        ctx.accounts.pool.pool_amount += amount;
 
         Ok(())
     }
@@ -54,6 +69,7 @@ pub mod deposit_withdraw {
             signer
         )?;
 
+        ctx.accounts.pool.pool_amount -= amount;
         Ok(())
     }
 }
@@ -132,6 +148,8 @@ pub struct Pool {
     pub authority: Pubkey,
     pub nonce: u8,
     pub vault: Pubkey,
+    pub total_pool_amount: u64,
+    pub pool_amount: u64,
 }
 
 #[error_code]
@@ -140,4 +158,8 @@ pub enum Errors {
     NotEnoughPoolAmount,
     #[msg("Unauthorized")]
     Unauthorized,
+    #[msg("Exceed pool amount.")]
+    ExceedPoolAmount,
+    #[msg("Invalid amount.")]
+    InvalidAmount,
 }
