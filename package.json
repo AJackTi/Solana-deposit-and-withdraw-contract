@@ -12,8 +12,10 @@
   },
   "dependencies": {
     "@project-serum/anchor": "^0.18.2",
+    "@solana/buffer-layout-utils": "^0.2.0",
     "@solana/spl-token": "^0.1.8",
-    "bigint-buffer": "^1.1.5"
+    "bigint-buffer": "^1.1.5",
+    "buffer-layout": "^1.2.2"
   },
   "devDependencies": {
     "@types/chai": "^4.3.16",

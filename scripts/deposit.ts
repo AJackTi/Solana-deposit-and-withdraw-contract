@@ -29,7 +29,7 @@ describe("deposit", () => {
       program.programId
     );
 
-    const amount = anchor.web3.LAMPORTS_PER_SOL / 10;
+    const amount = anchor.web3.LAMPORTS_PER_SOL;
     const tx = await program.rpc.deposit(new anchor.BN(amount), {
       accounts: {
         pool: poolKeypair.publicKey,

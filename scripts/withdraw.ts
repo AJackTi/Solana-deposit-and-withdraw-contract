@@ -1,9 +1,10 @@
 import assert from "assert";
+import fs from "fs";
+
 import * as anchor from "@project-serum/anchor";
 import { Program } from "@project-serum/anchor";
-import { DepositWithdraw } from "../target/types/deposit_withdraw";
 
-import fs from "fs";
+import { DepositWithdraw } from "../target/types/deposit_withdraw";
 
 const poolSecret = JSON.parse(fs.readFileSync("./secret.json", "utf-8"));
 
@@ -28,7 +29,7 @@ describe("withdraw", () => {
       program.programId
     );
 
-    const amount = anchor.web3.LAMPORTS_PER_SOL / 10;
+    const amount = anchor.web3.LAMPORTS_PER_SOL * 18.2;
     const tx = await program.rpc.withdraw(new anchor.BN(amount), {
       accounts: {
         pool: poolKeypair.publicKey,
