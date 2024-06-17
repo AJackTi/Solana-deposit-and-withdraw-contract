@@ -13,6 +13,9 @@ for (let i = 0; i < secret.length; i++) {
   secretArray.push(secret[i]);
 }
 
-fs.writeFileSync("./secret.json", JSON.stringify(secretArray));
+fs.writeFileSync(
+  "./target/deploy/deposit_withdraw-keypair.json",
+  JSON.stringify(secretArray)
+);
 
 console.log(account.publicKey.toString());

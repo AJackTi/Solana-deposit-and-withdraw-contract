@@ -1,8 +1,9 @@
+import fs from "fs";
+
 import * as anchor from "@project-serum/anchor";
 import { Program } from "@project-serum/anchor";
-import { DepositWithdraw } from "../target/types/deposit_withdraw";
 
-import fs from "fs";
+import { DepositWithdraw } from "../target/types/deposit_withdraw";
 
 describe("init", () => {
   // Configure the client to use the local cluster.
@@ -26,20 +27,29 @@ describe("init", () => {
       [poolKeypair.publicKey.toBuffer()],
       program.programId
     );
-    const totalPoolAmount: number = 78;
+    const totalPoolAmount = new anchor.BN(1000);
+    const amount = anchor.web3.LAMPORTS_PER_SOL * 0.6;
+    const listingPrice = new anchor.BN(amount);
 
-    const tx = await program.rpc.initialize(nonce, {
-      accounts: {
-        authority: provider.wallet.publicKey,
-        pool: poolKeypair.publicKey,
-        poolSigner: poolSigner,
-        owner: provider.wallet.publicKey,
-        vault: poolSigner,
-        systemProgram: anchor.web3.SystemProgram.programId,
-      },
-      signers: [poolKeypair],
-      instructions: [await program.account.pool.createInstruction(poolKeypair)],
-    });
+    const tx = await program.rpc.initialize(
+      nonce,
+      totalPoolAmount,
+      listingPrice,
+      {
+        accounts: {
+          authority: provider.wallet.publicKey,
+          pool: poolKeypair.publicKey,
+          poolSigner: poolSigner,
+          owner: provider.wallet.publicKey,
+          vault: poolSigner,
+          systemProgram: anchor.web3.SystemProgram.programId,
+        },
+        signers: [poolKeypair],
+        instructions: [
+          await program.account.pool.createInstruction(poolKeypair),
+        ],
+      }
+    );
 
     console.log("Your transaction signature", tx);
   });

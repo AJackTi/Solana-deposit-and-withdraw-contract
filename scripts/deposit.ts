@@ -1,9 +1,9 @@
-import assert from "assert";
-import * as anchor from "@project-serum/anchor";
-import { Program } from "@project-serum/anchor";
-import { DepositWithdraw } from "../target/types/deposit_withdraw";
+import fs from 'fs';
 
-import fs from "fs";
+import * as anchor from '@project-serum/anchor';
+import { Program } from '@project-serum/anchor';
+
+import { DepositWithdraw } from '../target/types/deposit_withdraw';
 
 const poolSecret = JSON.parse(fs.readFileSync("./secret.json", "utf-8"));
 
@@ -18,7 +18,6 @@ describe("deposit", () => {
   const poolKeypair = anchor.web3.Keypair.fromSecretKey(
     new Uint8Array(poolSecret)
   );
-  // let poolKeypair = anchor.web3.Keypair.generate();
 
   console.log("Authority:", provider.wallet.publicKey.toBase58());
   console.log("Pool:", poolKeypair.publicKey.toBase58());
@@ -29,7 +28,7 @@ describe("deposit", () => {
       program.programId
     );
 
-    const amount = anchor.web3.LAMPORTS_PER_SOL;
+    const amount = anchor.web3.LAMPORTS_PER_SOL * 0.6;
     const tx = await program.rpc.deposit(new anchor.BN(amount), {
       accounts: {
         pool: poolKeypair.publicKey,

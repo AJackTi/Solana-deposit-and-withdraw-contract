@@ -1,5 +1,6 @@
-import * as anchor from "@project-serum/anchor";
 import fs from "fs";
+
+import * as anchor from "@project-serum/anchor";
 
 const poolSecret = JSON.parse(
   fs.readFileSync("./target/deploy/deposit_withdraw-keypair.json", "utf-8")

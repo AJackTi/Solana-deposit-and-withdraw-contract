@@ -1,7 +1,7 @@
 [programs.localnet]
-deposit_withdraw = "A5KXGv2RWAMh2peKDWmnppF6FQgK3Rk3UCxyq5mV7nBb"
+deposit_withdraw = "AG4tbUkCfKoxYUhBZTUHmdsqm1uxpmnLPUNNEBpMGQPS"
 [programs.devnet]
-deposit_withdraw = "A5KXGv2RWAMh2peKDWmnppF6FQgK3Rk3UCxyq5mV7nBb"
+deposit_withdraw = "AG4tbUkCfKoxYUhBZTUHmdsqm1uxpmnLPUNNEBpMGQPS"
 
 [registry]
 url = "https://anchor.projectserum.com"
@@ -9,9 +9,13 @@ url = "https://anchor.projectserum.com"
 [provider]
 cluster = "devnet"
 wallet = "/Users/ajackti/.config/solana/id.json"
+# wallet = "/Users/ajackti/.config/solana/id2.json"
+
 
 [scripts]
 test = "ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
 init = "ts-mocha -p ./tsconfig.json -t 1000000 scripts/init.ts"
 deposit = "ts-mocha -p ./tsconfig.json -t 1000000 scripts/deposit.ts"
 withdraw = "ts-mocha -p ./tsconfig.json -t 1000000 scripts/withdraw.ts"
+balance = "ts-mocha -p ./tsconfig.json -t 1000000 scripts/balance.ts"
+subscribe = "ts-mocha -p ./tsconfig.json -t 1000000 scripts/subscribe.ts"

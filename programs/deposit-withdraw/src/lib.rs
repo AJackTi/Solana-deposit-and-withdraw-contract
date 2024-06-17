@@ -1,31 +1,34 @@
 use anchor_lang::prelude::*;
 use solana_program::entrypoint::ProgramResult;
 
-declare_id!("A5KXGv2RWAMh2peKDWmnppF6FQgK3Rk3UCxyq5mV7nBb");
+declare_id!("AG4tbUkCfKoxYUhBZTUHmdsqm1uxpmnLPUNNEBpMGQPS");
 
 #[program]
 pub mod deposit_withdraw {
     use super::*;
     pub fn initialize(
         ctx: Context<Initialize>,
-        nonce: u8
-        // total_pool_amount: u64
+        nonce: u8,
+        total_pool_amount: u64,
+        listing_price: u64
     ) -> ProgramResult {
         let pool = &mut ctx.accounts.pool;
         pool.authority = ctx.accounts.authority.key();
         pool.vault = ctx.accounts.vault.key();
         pool.nonce = nonce;
-        pool.total_pool_amount = 78;
+        pool.total_pool_amount = total_pool_amount;
+        pool.pool_amount = 0;
+        pool.listing_price = listing_price;
 
         Ok(())
     }
 
     pub fn deposit(ctx: Context<Deposit>, amount: u64) -> ProgramResult {
-        if amount < 1 {
+        if amount < ctx.accounts.pool.listing_price {
             return Err(ProgramError::from(error!(Errors::InvalidAmount)));
         }
 
-        if ctx.accounts.pool.pool_amount + amount > ctx.accounts.pool.total_pool_amount {
+        if ctx.accounts.pool.pool_amount + 1 > ctx.accounts.pool.total_pool_amount {
             return Err(ProgramError::from(error!(Errors::ExceedPoolAmount)));
         }
 
@@ -41,6 +44,12 @@ pub mod deposit_withdraw {
         )?;
 
         ctx.accounts.pool.pool_amount += amount;
+
+        let event = Event {
+            sender: ctx.accounts.depositor.key(),
+            amount,
+        };
+        emit!(event);
 
         Ok(())
     }
@@ -150,6 +159,13 @@ pub struct Pool {
     pub vault: Pubkey,
     pub total_pool_amount: u64,
     pub pool_amount: u64,
+    pub listing_price: u64,
+}
+
+#[event]
+pub struct Event {
+    pub sender: Pubkey,
+    pub amount: u64,
 }
 
 #[error_code]

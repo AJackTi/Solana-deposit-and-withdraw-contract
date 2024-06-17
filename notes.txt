@@ -1,0 +1,11 @@
+1. anchor clean
+2. anchor build
+3. anchor keys list
+4. Replace program_id in lib.rs
+5. anchor build
+6. solana program deploy ./target/deploy/deposit_withdraw.so --url devnet
+    || anchor deploy --provider.cluster https://api.devnet.solana.com --program-keypair ./target/deploy/deposit_withdraw-keypair.json --program-name deposit_withdraw
+7. anchor run init --provider.cluster https://api.devnet.solana.com
+8. anchor run deposit --provider.cluster https://api.devnet.solana.com
+9. anchor run withdraw --provider.cluster https://api.devnet.solana.com
+10. anchor run subscribe --provider.cluster https://api.devnet.solana.com
