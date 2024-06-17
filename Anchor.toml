@@ -1,7 +1,7 @@
 [programs.localnet]
-deposit_withdraw = "AG4tbUkCfKoxYUhBZTUHmdsqm1uxpmnLPUNNEBpMGQPS"
+deposit_withdraw = "6XaxnoxVPi2vM5CBEhEfwM8ok2WgWTnA2i2djREjgJG"
 [programs.devnet]
-deposit_withdraw = "AG4tbUkCfKoxYUhBZTUHmdsqm1uxpmnLPUNNEBpMGQPS"
+deposit_withdraw = "6XaxnoxVPi2vM5CBEhEfwM8ok2WgWTnA2i2djREjgJG"
 
 [registry]
 url = "https://anchor.projectserum.com"

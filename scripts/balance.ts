@@ -1,17 +1,15 @@
-import fs from "fs";
+import fs from 'fs';
 
-import * as anchor from "@project-serum/anchor";
-import { Program } from "@project-serum/anchor";
+import * as anchor from '@project-serum/anchor';
+import { Program } from '@project-serum/anchor';
 
-import { DepositWithdraw } from "../target/types/deposit_withdraw";
+import { DepositWithdraw } from '../target/types/deposit_withdraw';
 
-const poolSecret = JSON.parse(
-  fs.readFileSync("../target/deploy/deposit_withdraw-keypair.json", "utf-8")
-);
+const poolSecret = JSON.parse(fs.readFileSync("./secret.json", "utf-8"));
 
 describe("balance", () => {
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.Provider.env());
+  anchor.setProvider(anchor.AnchorProvider.env());
 
   const program = anchor.workspace.DepositWithdraw as Program<DepositWithdraw>;
 
@@ -22,7 +20,7 @@ describe("balance", () => {
   );
   // let poolKeypair = anchor.web3.Keypair.generate();
 
-  console.log("Authority:", provider.wallet.publicKey.toBase58());
+  console.log("Authority:", provider.publicKey.toBase58());
   console.log("Pool:", poolKeypair.publicKey.toBase58());
 
   it("Balance", async () => {

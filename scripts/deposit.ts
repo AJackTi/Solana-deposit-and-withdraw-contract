@@ -9,7 +9,7 @@ const poolSecret = JSON.parse(fs.readFileSync("./secret.json", "utf-8"));
 
 describe("deposit", () => {
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.Provider.env());
+  anchor.setProvider(anchor.AnchorProvider.env());
 
   const program = anchor.workspace.DepositWithdraw as Program<DepositWithdraw>;
 
@@ -19,7 +19,7 @@ describe("deposit", () => {
     new Uint8Array(poolSecret)
   );
 
-  console.log("Authority:", provider.wallet.publicKey.toBase58());
+  console.log("Authority:", provider.publicKey.toBase58());
   console.log("Pool:", poolKeypair.publicKey.toBase58());
 
   it("Deposit", async () => {
@@ -32,9 +32,9 @@ describe("deposit", () => {
     const tx = await program.rpc.deposit(new anchor.BN(amount), {
       accounts: {
         pool: poolKeypair.publicKey,
-        authority: provider.wallet.publicKey,
+        authority: provider.publicKey,
         vault: poolSigner,
-        depositor: provider.wallet.publicKey,
+        depositor: provider.publicKey,
         poolSigner: poolSigner,
         systemProgram: anchor.web3.SystemProgram.programId,
       },

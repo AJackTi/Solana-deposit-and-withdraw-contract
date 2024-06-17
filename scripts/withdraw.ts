@@ -1,16 +1,16 @@
-import assert from "assert";
-import fs from "fs";
+import assert from 'assert';
+import fs from 'fs';
 
-import * as anchor from "@project-serum/anchor";
-import { Program } from "@project-serum/anchor";
+import * as anchor from '@project-serum/anchor';
+import { Program } from '@project-serum/anchor';
 
-import { DepositWithdraw } from "../target/types/deposit_withdraw";
+import { DepositWithdraw } from '../target/types/deposit_withdraw';
 
 const poolSecret = JSON.parse(fs.readFileSync("./secret.json", "utf-8"));
 
 describe("withdraw", () => {
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.Provider.env());
+  anchor.setProvider(anchor.AnchorProvider.env());
 
   const program = anchor.workspace.DepositWithdraw as Program<DepositWithdraw>;
 
@@ -20,7 +20,7 @@ describe("withdraw", () => {
     new Uint8Array(poolSecret)
   );
 
-  console.log("Authority:", provider.wallet.publicKey.toBase58());
+  console.log("Authority:", provider.publicKey.toBase58());
   console.log("Pool:", poolKeypair.publicKey.toBase58());
 
   it("Withdraw", async () => {
@@ -35,9 +35,9 @@ describe("withdraw", () => {
     const tx = await program.rpc.withdraw(new anchor.BN(balanceLamports), {
       accounts: {
         pool: poolKeypair.publicKey,
-        authority: provider.wallet.publicKey,
+        authority: provider.publicKey,
         vault: poolSigner,
-        receiver: provider.wallet.publicKey,
+        receiver: provider.publicKey,
         poolSigner: poolSigner,
         systemProgram: anchor.web3.SystemProgram.programId,
       },

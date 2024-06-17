@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use solana_program::entrypoint::ProgramResult;
 
-declare_id!("AG4tbUkCfKoxYUhBZTUHmdsqm1uxpmnLPUNNEBpMGQPS");
+declare_id!("6XaxnoxVPi2vM5CBEhEfwM8ok2WgWTnA2i2djREjgJG");
 
 #[program]
 pub mod deposit_withdraw {
@@ -43,7 +43,7 @@ pub mod deposit_withdraw {
             &[ctx.accounts.depositor.to_account_info(), ctx.accounts.vault.to_account_info()]
         )?;
 
-        ctx.accounts.pool.pool_amount += amount;
+        ctx.accounts.pool.pool_amount += 1;
 
         let event = Event {
             sender: ctx.accounts.depositor.key(),

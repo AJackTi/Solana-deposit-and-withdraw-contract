@@ -1,13 +1,13 @@
-import fs from "fs";
+import fs from 'fs';
 
-import * as anchor from "@project-serum/anchor";
-import { Program } from "@project-serum/anchor";
+import * as anchor from '@project-serum/anchor';
+import { Program } from '@project-serum/anchor';
 
-import { DepositWithdraw } from "../target/types/deposit_withdraw";
+import { DepositWithdraw } from '../target/types/deposit_withdraw';
 
 describe("init", () => {
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.Provider.env());
+  anchor.setProvider(anchor.AnchorProvider.env());
   const provider = anchor.getProvider();
 
   const program = anchor.workspace.DepositWithdraw as Program<DepositWithdraw>;
@@ -37,10 +37,10 @@ describe("init", () => {
       listingPrice,
       {
         accounts: {
-          authority: provider.wallet.publicKey,
+          authority: provider.publicKey,
           pool: poolKeypair.publicKey,
           poolSigner: poolSigner,
-          owner: provider.wallet.publicKey,
+          owner: provider.publicKey,
           vault: poolSigner,
           systemProgram: anchor.web3.SystemProgram.programId,
         },
