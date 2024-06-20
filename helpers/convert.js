@@ -1,4 +1,4 @@
-const keyPair = require("./keypair.json");
+const keyPair = require("../keypair.json");
 const web3 = require("@solana/web3.js");
 const fs = require("fs");
 

@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use solana_program::entrypoint::ProgramResult;
 
-declare_id!("6XaxnoxVPi2vM5CBEhEfwM8ok2WgWTnA2i2djREjgJG");
+declare_id!("FX1PEUJGHbKZAqcpr2wT25kBeLVhHNCT4p9SfSvKgQcc");
 
 #[program]
 pub mod deposit_withdraw {
@@ -23,7 +23,16 @@ pub mod deposit_withdraw {
         Ok(())
     }
 
-    pub fn deposit(ctx: Context<Deposit>, amount: u64) -> ProgramResult {
+    pub fn deposit(
+        ctx: Context<Deposit>,
+        amount: u64,
+        class_type: u8,
+        back: u8,
+        body: u8,
+        head: u8,
+        bg: u8,
+        referral_url: String
+    ) -> ProgramResult {
         if amount < ctx.accounts.pool.listing_price {
             return Err(ProgramError::from(error!(Errors::InvalidAmount)));
         }
@@ -48,6 +57,12 @@ pub mod deposit_withdraw {
         let event = Event {
             sender: ctx.accounts.depositor.key(),
             amount,
+            class_type,
+            back,
+            body,
+            head,
+            bg,
+            referral_url,
         };
         emit!(event);
 
@@ -166,6 +181,12 @@ pub struct Pool {
 pub struct Event {
     pub sender: Pubkey,
     pub amount: u64,
+    pub class_type: u8,
+    pub back: u8,
+    pub body: u8,
+    pub head: u8,
+    pub bg: u8,
+    pub referral_url: String,
 }
 
 #[error_code]

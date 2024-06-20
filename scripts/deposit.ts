@@ -28,17 +28,33 @@ describe("deposit", () => {
       program.programId
     );
 
+    const classType = new anchor.BN(1);
+    const back = new anchor.BN(2);
+    const body = new anchor.BN(3);
+    const head = new anchor.BN(4);
+    const bg = new anchor.BN(5);
+    const referralUrl = "";
+
     const amount = anchor.web3.LAMPORTS_PER_SOL * 0.6;
-    const tx = await program.rpc.deposit(new anchor.BN(amount), {
-      accounts: {
-        pool: poolKeypair.publicKey,
-        authority: provider.publicKey,
-        vault: poolSigner,
-        depositor: provider.publicKey,
-        poolSigner: poolSigner,
-        systemProgram: anchor.web3.SystemProgram.programId,
-      },
-    });
+    const tx = await program.rpc.deposit(
+      new anchor.BN(amount),
+      classType,
+      back,
+      body,
+      head,
+      bg,
+      referralUrl,
+      {
+        accounts: {
+          pool: poolKeypair.publicKey,
+          authority: provider.publicKey,
+          vault: poolSigner,
+          depositor: provider.publicKey,
+          poolSigner: poolSigner,
+          systemProgram: anchor.web3.SystemProgram.programId,
+        },
+      }
+    );
 
     console.log("Your transaction signature", tx);
     let contractLamports = await provider.connection.getBalance(poolSigner);
